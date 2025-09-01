@@ -4,6 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+autocxx = "0.30.0"
+cxx = "1.0.173"
 
 [profile.release]
 lto = true
@@ -12,3 +14,6 @@ panic = "abort"
 
 [profile.dev]
 debug = 0
+
+[build-dependencies]
+autocxx-build = "0.30.0"
