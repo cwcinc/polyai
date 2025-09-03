@@ -1,5 +1,7 @@
-use std::fs;
-use std::path::{Path, PathBuf};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 fn read_dir(path: &Path) -> Vec<PathBuf> {
     let mut cpp_files = Vec::new();
@@ -25,20 +27,17 @@ fn main() {
     let include_path_1 = PathBuf::from("ammo.js/bullet/src");
     let include_path_2 = PathBuf::from("ammo.js");
 
-    let mut b = autocxx_build::Builder::new("src/main.rs", &[&include_path_1, &include_path_2])
-        .extra_clang_args(&[
-            "-std=c++14",
-            "-DBT_NO_SIMD_OPERATOR_OVERLOADS",
-        ])
-        .build().expect("Failed to create builder");
+    let mut b = autocxx_build::Builder::new("src/ammo_sys.rs", &[&include_path_1, &include_path_2])
+        .extra_clang_args(&["-std=c++14", "-DBT_NO_SIMD_OPERATOR_OVERLOADS"])
+        .build()
+        .expect("Failed to create builder");
 
     let cpp_dir = Path::new("ammo.js/bullet/src/");
     let cpp_files = read_dir(cpp_dir);
     b.files(cpp_files);
 
-    b.std("c++14")
-        .compile("ammo");
+    b.std("c++14").compile("ammo");
 
     println!("cargo:rerun-if-changed={}", include_path_2.display());
-    println!("cargo:rerun-if-changed=src/main.rs");
+    println!("cargo:rerun-if-changed=src/ammo_sys.rs");
 }
