@@ -25,6 +25,8 @@ include_cpp! {
     generate!("btTriangleMesh")
     generate!("btVector3")
     generate!("btVehicleTuning")
+
+    generate!("btConcaveShape")
 }
 
 pub use self::ffi::*;
