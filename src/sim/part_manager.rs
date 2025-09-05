@@ -71,6 +71,19 @@ impl PartManager {
             }
             let mut triangle_mesh_shape =
                 bt_bvh_triangle_mesh_shape_new(triangle_mesh.cast_mut(), false, None);
+            bt_bvh_triangle_mesh_shape_set_margin(&mut triangle_mesh_shape, 0.01);
+            parts.push(Part {
+                id: part.id,
+                bounding_box,
+                shape: triangle_mesh_shape,
+                triangle_mesh,
+                detector: part.detector.map(|d| PartDetector {
+                    type_: d.type_,
+                    center: Vector3::from(d.center),
+                    size: Vector3::from(d.size),
+                }),
+                start_offset: part.start_offset.map(Vector3::from),
+            });
         }
 
         Self { track_parts: parts }
