@@ -11,7 +11,38 @@ PolyAI is a AI model designed to play the game PolyTrack.
 - 🔴 Advanced training and hyper-parameter tuning
 - TBD...
 
+## Building
+
+This is most likely temporary.
+
+By the way, `clang++` is the current required compiler (but you can probably change that in `CMakeLists.txt`).
+
+1. Clone the repository with submodules:
+
+    ```bash
+    git clone --recurse-submodules https://github.com/SpideyZac/polyai.git
+    cd polyai
+    ```
+
+2. Create a build directory and navigate into it:
+
+    ```bash
+    cmake -S . -B build
+    ```
+
+3. Build the project using CMake:
+
+    ```bash
+    cmake --build build --config Release
+    ```
+
+4. Run the executable:
+
+    ```bash
+    ./build/Release/polyai
+    ```
+
 ## License
 
-PolyAI itself is licensed under the MIT License. See the `LICENSE` file for details. ammo.js & Bullet Physics are licensed under their own respective licenses.
+PolyAI itself is licensed under the MIT License. See the `LICENSE` file for details. `ammo.js` & `Bullet Physics` are licensed under their own respective licenses.
 See the `ammo.js/LICENSE` and `ammo.js/bullet/LICENSE` files for details.
