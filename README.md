@@ -15,8 +15,6 @@ PolyAI is a AI model designed to play the game PolyTrack.
 
 This is most likely temporary.
 
-By the way, `clang++` is the current required compiler (but you can probably change that in `CMakeLists.txt`).
-
 1. Clone the repository with submodules:
 
     ```bash
@@ -27,7 +25,7 @@ By the way, `clang++` is the current required compiler (but you can probably cha
 2. Create a build directory and navigate into it:
 
     ```bash
-    cmake -S . -B build
+    cmake -S . -B build -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
     ```
 
 3. Build the project using CMake:
