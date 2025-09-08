@@ -13,7 +13,7 @@ endif()
 set(USE_GRAPHICAL_BENCHMARK OFF CACHE BOOL "" FORCE)
 set(USE_GLUT OFF CACHE BOOL "" FORCE)
 
-add_subdirectory(ammo.js/bullet)
+add_subdirectory(ammo.js/bullet EXCLUDE_FROM_ALL)
 
 add_executable(polyai src/main.cpp)
 

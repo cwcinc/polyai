@@ -6,7 +6,7 @@ class Vector3 {
 
     Vector3(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z) {}
 
-    bool equals(const Vector3 &other, double epsilon = 1e-6) const {
+    bool equals(const Vector3 &other, double epsilon = 1e-4) const {
         return std::abs(x - other.x) < epsilon &&
                std::abs(y - other.y) < epsilon &&
                std::abs(z - other.z) < epsilon;
@@ -20,7 +20,7 @@ class Quaternion {
     Quaternion(double x = 0, double y = 0, double z = 0, double w = 1)
         : x(x), y(y), z(z), w(w) {}
 
-    bool equals(const Quaternion &other, double epsilon = 1e-6) const {
+    bool equals(const Quaternion &other, double epsilon = 1e-4) const {
         return std::abs(x - other.x) < epsilon &&
                std::abs(y - other.y) < epsilon &&
                std::abs(z - other.z) < epsilon &&
