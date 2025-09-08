@@ -24,7 +24,7 @@ Due to some Windows-specific issues, you must build this project with Windows-su
     cd polyai
     ```
 
-2. Create a build directory and navigate into it:
+2. Create a build directory:
 
     ```bash
     cmake -S . -B build -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
