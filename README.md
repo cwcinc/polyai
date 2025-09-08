@@ -42,6 +42,14 @@ Due to some Windows-specific issues, you must build this project with Windows-su
     ./build/polyai
     ```
 
+## Formatting
+
+This project uses `clang-format` for code formatting. To format the code, run:
+
+```bash
+./scripts/format.sh
+```
+
 ## License
 
 PolyAI itself is licensed under the MIT License. See the `LICENSE` file for details. `ammo.js` & `Bullet Physics` are licensed under their own respective licenses.
