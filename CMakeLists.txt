@@ -10,15 +10,6 @@ else()
     message(WARNING "LTO not supported: ${ipo_error}")
 endif()
 
-if(MSVC)
-    set(USE_MSVC_FAST_FLOATINGPOINT OFF CACHE BOOL "" FORCE)
-    add_compile_options(/fp:precise)
-else()
-    add_compile_options(-fno-fast-math -msse2 -mfpmath=sse)
-endif()
-
-set(BUILD_DEMOS OFF CACHE BOOL "" FORCE)
-set(BUILD_MULTITHREADING OFF CACHE BOOL "" FORCE)
 set(USE_GRAPHICAL_BENCHMARK OFF CACHE BOOL "" FORCE)
 set(USE_GLUT OFF CACHE BOOL "" FORCE)
 

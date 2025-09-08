@@ -15,6 +15,8 @@ PolyAI is a AI model designed to play the game PolyTrack.
 
 This is most likely temporary.
 
+Due to some Windows-specific issues, you must build this project with Windows-subsystem-for-Linux (WSL) or a Linux machine.
+
 1. Clone the repository with submodules:
 
     ```bash
