@@ -39,7 +39,7 @@ Due to some Windows-specific issues, you must build this project with Windows-su
 4. Run the executable:
 
     ```bash
-    ./build/Release/polyai
+    ./build/polyai
     ```
 
 ## License
