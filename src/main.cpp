@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include <cstdint>
+#include <ostream>
 
 class Vector3 {
   public:
@@ -8,10 +9,19 @@ class Vector3 {
 
     Vector3(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z) {}
 
-    bool equals(const Vector3 &other, double epsilon = 1e-4) const {
+    bool equals(const Vector3 &other, double epsilon) const {
         return std::abs(x - other.x) < epsilon &&
                std::abs(y - other.y) < epsilon &&
                std::abs(z - other.z) < epsilon;
+    }
+
+    bool operator==(const Vector3 &other) const {
+        return this->equals(other, 1e-4);
+    }
+
+    friend std::ostream &operator<<(std::ostream &stream, const Vector3 &self) {
+        return stream << "(" << self.x << ", " << self.y << ", " << self.z
+                      << ")";
     }
 };
 
@@ -22,11 +32,21 @@ class Quaternion {
     Quaternion(double x = 0, double y = 0, double z = 0, double w = 1)
         : x(x), y(y), z(z), w(w) {}
 
-    bool equals(const Quaternion &other, double epsilon = 1e-4) const {
+    bool equals(const Quaternion &other, double epsilon) const {
         return std::abs(x - other.x) < epsilon &&
                std::abs(y - other.y) < epsilon &&
                std::abs(z - other.z) < epsilon &&
                std::abs(w - other.w) < epsilon;
+    }
+
+    bool operator==(const Quaternion &other) const {
+        return this->equals(other, 1e-4);
+    }
+
+    friend std::ostream &operator<<(std::ostream &stream,
+                                    const Quaternion &self) {
+        return stream << self.w << " + " << self.x << "i + " << self.y << "j + "
+                      << self.z << "k";
     }
 };
 
@@ -126,7 +146,6 @@ class PhysicsWorld {
     }
 
     btDiscreteDynamicsWorld &getWorld() { return this->m_dynamicsWorld; }
-
     btCollisionDispatcher &getDispatcher() { return this->m_dispatcher; }
 };
 
@@ -223,20 +242,24 @@ bool determinismCheck() {
     Quaternion actualRotation(finalRotation.x(), finalRotation.y(),
                               finalRotation.z(), finalRotation.w());
 
-    bool positionMatch = expectedPosition.equals(actualPosition);
-    bool rotationMatch = expectedRotation.equals(actualRotation);
+    bool positionMatch = expectedPosition == actualPosition;
+    bool rotationMatch = expectedRotation == actualRotation;
 
     bool result = positionMatch && rotationMatch;
     if (!result) {
-        printf("Expected Position: (%f, %f, %f)\n", expectedPosition.x,
-               expectedPosition.y, expectedPosition.z);
-        printf("Actual Position:   (%f, %f, %f)\n", actualPosition.x,
-               actualPosition.y, actualPosition.z);
-        printf("Expected Rotation: (%f, %f, %f, %f)\n", expectedRotation.x,
-               expectedRotation.y, expectedRotation.z, expectedRotation.w);
-        printf("Actual Rotation:   (%f, %f, %f, %f)\n", actualRotation.x,
-               actualRotation.y, actualRotation.z, actualRotation.w);
-        std::cerr << "Determinism check failed: Simulation" << std::endl;
+        // printf("Expected Position: (%f, %f, %f)\n", expectedPosition.x,
+        //        expectedPosition.y, expectedPosition.z);
+        std::cout << "Expected Position: " << expectedPosition << '\n';
+        // printf("Actual Position:   (%f, %f, %f)\n", actualPosition.x,
+        //        actualPosition.y, actualPosition.z);
+        std::cout << "Actual Position: " << actualPosition << '\n';
+        // printf("Expected Rotation: (%f, %f, %f, %f)\n", expectedRotation.x,
+        //        expectedRotation.y, expectedRotation.z, expectedRotation.w);
+        std::cout << "Expected Rotation: " << expectedRotation << '\n';
+        // printf("Actual Rotation:   (%f, %f, %f, %f)\n", actualRotation.x,
+        //        actualRotation.y, actualRotation.z, actualRotation.w);
+        std::cout << "Actual Rotation: " << actualRotation << '\n';
+        std::cerr << "Determinism check failed: Simulation\n";
     }
 
     return result;
@@ -244,10 +267,10 @@ bool determinismCheck() {
 
 int main() {
     if (determinismCheck()) {
-        std::cout << "Determinism check passed!" << std::endl;
+        std::cout << "Determinism check passed!\n";
         return 0;
     } else {
-        std::cout << "Determinism check failed!" << std::endl;
+        std::cout << "Determinism check failed!\n";
         return 1;
     }
 }
