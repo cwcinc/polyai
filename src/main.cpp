@@ -16,7 +16,7 @@ class Vector3 {
     }
 
     bool operator==(const Vector3 &other) const {
-        return this->equals(other, 1e-4);
+        return this->equals(other, 1e-6);
     }
 
     friend std::ostream &operator<<(std::ostream &stream, const Vector3 &self) {
@@ -40,7 +40,7 @@ class Quaternion {
     }
 
     bool operator==(const Quaternion &other) const {
-        return this->equals(other, 1e-4);
+        return this->equals(other, 1e-6);
     }
 
     friend std::ostream &operator<<(std::ostream &stream,
@@ -230,6 +230,12 @@ bool determinismCheck() {
 
     for (int i = 0; i < 999; i++) {
         physicsWorld.step();
+        btTransform chassisWorldTransform;
+        chassisBody.getMotionState()->getWorldTransform(chassisWorldTransform);
+        std::cout << "Step " << i << ": Chassis at (" << std::hexfloat
+                  << std::hexfloat << chassisWorldTransform.getOrigin().x() << ", "
+                  << std::hexfloat << chassisWorldTransform.getOrigin().y() << ", "
+                  << std::hexfloat << chassisWorldTransform.getOrigin().z() << ")\n";
     }
 
     btTransform finalTransform;
