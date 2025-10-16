@@ -1,5 +1,6 @@
 #include "main.h"
 
+#include <chrono>
 #include <cstdint>
 #include <ostream>
 
@@ -15,9 +16,11 @@ class Vector3 {
                std::abs(z - other.z) < epsilon;
     }
 
-    bool operator==(const Vector3 &other) const {
-        return this->equals(other, 1e-6);
+    bool equals(const Vector3 &other) const {
+        return x == other.x && y == other.y && z == other.z;
     }
+
+    bool operator==(const Vector3 &other) const { return this->equals(other); }
 
     friend std::ostream &operator<<(std::ostream &stream, const Vector3 &self) {
         return stream << "(" << self.x << ", " << self.y << ", " << self.z
@@ -39,8 +42,12 @@ class Quaternion {
                std::abs(w - other.w) < epsilon;
     }
 
+    bool equals(const Quaternion &other) const {
+        return x == other.x && y == other.y && z == other.z && w == other.w;
+    }
+
     bool operator==(const Quaternion &other) const {
-        return this->equals(other, 1e-6);
+        return this->equals(other);
     }
 
     friend std::ostream &operator<<(std::ostream &stream,
@@ -101,7 +108,8 @@ class PhysicsWorld {
 
     void createGroundPlane() {
         if (m_ground) {
-            throw std::runtime_error("Ground is already initialized");
+            // throw std::runtime_error("Ground is already initialized");
+            return;
         }
 
         btVector3 normal(0, 1, 0);
@@ -228,15 +236,18 @@ bool determinismCheck() {
     vehicle.applyEngineForce(engineForce, 2);
     vehicle.applyEngineForce(engineForce, 3);
 
+    using clock = std::chrono::high_resolution_clock;
+    auto start = clock::now();
+
     for (int i = 0; i < 999; i++) {
         physicsWorld.step();
         btTransform chassisWorldTransform;
         chassisBody.getMotionState()->getWorldTransform(chassisWorldTransform);
-        std::cout << "Step " << i << ": Chassis at (" << std::hexfloat
-                  << std::hexfloat << chassisWorldTransform.getOrigin().x() << ", "
-                  << std::hexfloat << chassisWorldTransform.getOrigin().y() << ", "
-                  << std::hexfloat << chassisWorldTransform.getOrigin().z() << ")\n";
     }
+
+    auto end = clock::now();
+    std::chrono::duration<double, std::milli> elapsed = end - start;
+    std::cout << "Stepping simulation took " << elapsed.count() << " ms\n";
 
     btTransform finalTransform;
     chassisBody.getMotionState()->getWorldTransform(finalTransform);
@@ -272,7 +283,18 @@ bool determinismCheck() {
 }
 
 int main() {
-    if (determinismCheck()) {
+    using clock = std::chrono::high_resolution_clock;
+
+    auto start = clock::now();
+
+    bool success = determinismCheck();
+
+    auto end = clock::now();
+    std::chrono::duration<double, std::milli> elapsed = end - start;
+
+    std::cout << "Simulation took " << elapsed.count() << " ms\n";
+
+    if (success) {
         std::cout << "Determinism check passed!\n";
         return 0;
     } else {

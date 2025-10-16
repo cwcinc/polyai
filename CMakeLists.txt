@@ -9,6 +9,8 @@ add_subdirectory(ammo.js/bullet EXCLUDE_FROM_ALL)
 
 add_executable(polyai src/main.cpp)
 
+target_compile_options(polyai PRIVATE -fno-exceptions -fno-rtti)
+
 target_link_libraries(polyai PRIVATE
     BulletDynamics
     BulletCollision
