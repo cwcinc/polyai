@@ -239,7 +239,7 @@ bool determinismCheck() {
     using clock = std::chrono::high_resolution_clock;
     auto start = clock::now();
 
-    for (int i = 0; i < 999; i++) {
+    for (int i = 0; i < 3600000; i++) {
         physicsWorld.step();
         btTransform chassisWorldTransform;
         chassisBody.getMotionState()->getWorldTransform(chassisWorldTransform);
@@ -248,6 +248,13 @@ bool determinismCheck() {
     auto end = clock::now();
     std::chrono::duration<double, std::milli> elapsed = end - start;
     std::cout << "Stepping simulation took " << elapsed.count() << " ms\n";
+
+    // calculate in game time (steps / 1000) per second
+    double inGameSeconds = 3600000.0 / 1000.0;
+    std::cout << "In game time: " << inGameSeconds << " seconds\n";
+    double realSeconds = elapsed.count() / 1000.0;
+    std::cout << "Real time: " << realSeconds << " seconds\n";
+    std::cout << "Speedup: " << inGameSeconds / realSeconds << "x\n";
 
     btTransform finalTransform;
     chassisBody.getMotionState()->getWorldTransform(finalTransform);
