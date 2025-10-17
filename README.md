@@ -16,6 +16,7 @@ PolyAI is a AI model designed to play the game PolyTrack.
 Windows is not supported due to WasmTime not being available on Windows. Please use WSL.
 
 Pre-requisites:
+
 - [WASI SDK](https://github.com/WebAssembly/wasi-sdk)
 - [Wasm Time](https://github.com/bytecodealliance/wasmtime)
 
@@ -26,22 +27,16 @@ Pre-requisites:
     cd polyai
     ```
 
-2. Create a build directory:
+2. Set your `WASI_SDK` environment variable to point to your WASI SDK installation:
 
     ```bash
-    cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=/path/to/wasi-sdk/share/cmake/wasi-sdk.cmake -DCMAKE_BUILD_TYPE=Release
+    export WASI_SDK=/path/to/wasi-sdk
     ```
 
-3. Build the project using CMake:
+3. Build and run the project:
 
     ```bash
-    cmake --build build
-    ```
-
-4. Run the executable:
-
-    ```bash
-    wasmtime build/polyai
+    make
     ```
 
 ## Formatting
