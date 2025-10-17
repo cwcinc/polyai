@@ -11,7 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_subdirectory(ammo.js/bullet EXCLUDE_FROM_ALL)
 
-add_executable(polyai src/main.cpp)
+add_executable(polyai src/main.cpp src/determinism_check.cpp)
 
 target_compile_options(polyai PRIVATE 
     -fno-exceptions 
