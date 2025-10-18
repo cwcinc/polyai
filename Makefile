@@ -7,18 +7,18 @@ $(error Please set the WASI_SDK environment variable, e.g. `export WASI_SDK=/pat
 endif
 
 TOOLCHAIN_FILE := $(WASI_SDK)/share/cmake/wasi-sdk.cmake
-CMAKE_FLAGS := -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE) -DCMAKE_BUILD_TYPE=Release
+CMAKE_FLAGS := -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE) -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
-SRC_FILES := $(shell find src include -type f)
+SRC_FILES := $(shell find src -type f)
 EXECUTABLE := $(BUILD_DIR)/$(TARGET)
 
 all: $(EXECUTABLE) run
 
-$(BUILD_DIR)/Makefile: CMakeLists.txt
+$(BUILD_DIR)/build.ninja: CMakeLists.txt
 	@echo "Configuring project using WASI SDK at: $(WASI_SDK)"
-	cmake -S . -B $(BUILD_DIR) $(CMAKE_FLAGS)
+	cmake -S . -B $(BUILD_DIR) -G Ninja $(CMAKE_FLAGS)
 
-$(EXECUTABLE): $(BUILD_DIR)/Makefile $(SRC_FILES)
+$(EXECUTABLE): $(BUILD_DIR)/build.ninja $(SRC_FILES)
 	@echo "Building $(TARGET)..."
 	cmake --build $(BUILD_DIR)
 
