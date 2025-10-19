@@ -1,11 +1,14 @@
-#include "main.h"
+import determinism_check;
+
+#include <chrono>
+#include <iostream>
 
 int main() {
     using clock = std::chrono::high_resolution_clock;
 
     auto start = clock::now();
 
-    bool success = DeterminismCheck::determinismCheck();
+    bool success = determinismCheck();
 
     auto end = clock::now();
     std::chrono::duration<double, std::milli> elapsed = end - start;

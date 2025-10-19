@@ -1,7 +1,65 @@
-#include "determinism_check.h"
-#include <algorithm>
+module;
+#include <iostream>
+#include <memory>
 
-namespace DeterminismCheck {
+#include "btBulletDynamicsCommon.h"
+
+export module determinism_check;
+
+export bool determinismCheck();
+
+module :private;
+
+class Vector3 {
+  public:
+    double x, y, z;
+
+    Vector3(double x = 0, double y = 0, double z = 0);
+    bool equals(const Vector3 &other) const;
+    bool operator==(const Vector3 &other) const;
+    friend std::ostream &operator<<(std::ostream &stream, const Vector3 &self);
+};
+
+class Quaternion {
+  public:
+    double x, y, z, w;
+
+    Quaternion(double x = 0, double y = 0, double z = 0, double w = 1);
+    bool equals(const Quaternion &other) const;
+    bool operator==(const Quaternion &other) const;
+    friend std::ostream &operator<<(std::ostream &stream,
+                                    const Quaternion &self);
+};
+
+class PhysicsWorld {
+  private:
+    static constexpr int STEPS_PER_SECOND = 1000;
+    static constexpr double TIME_STEP = 1.0 / STEPS_PER_SECOND;
+
+    btDefaultCollisionConfiguration m_collisionConfiguration;
+    btCollisionDispatcher m_dispatcher;
+    btDbvtBroadphase m_broadphase;
+    btSequentialImpulseConstraintSolver m_solver;
+    btDiscreteDynamicsWorld m_dynamicsWorld;
+
+    struct GroundInfo {
+        btRigidBody *body;
+        btCollisionShape *shape;
+        bool isActive;
+    };
+    std::unique_ptr<GroundInfo> m_ground;
+
+  public:
+    PhysicsWorld();
+    ~PhysicsWorld();
+    void dispose();
+    void createGroundPlane();
+    void activePhysicsAt(const Vector3 &position);
+    void step();
+    btDiscreteDynamicsWorld &getWorld();
+    btCollisionDispatcher &getDispatcher();
+};
+
 Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 double Vector3::lengthSq() const {
     return x * x + y * y + z * z;
@@ -263,4 +321,3 @@ bool determinismCheck() {
 
     return result;
 }
-} // namespace DeterminismCheck
