@@ -128,6 +128,7 @@ void PhysicsWorld::createMountains(const double vertices[], const size_t vertice
     double minDistance = std::sqrt(minDistanceSq);
 
     m_mountains = std::make_unique<MountainInfo>();
+    
     m_mountains->body = mountainsRigidBody;
     m_mountains->shape = mountainMeshShape;
     m_mountains->triangleMesh = triangleMesh;
@@ -162,6 +163,10 @@ bool determinismCheck() {
 
     PhysicsWorld physicsWorld;
     physicsWorld.createGroundPlane();
+
+    double mountainVertices[] = {2, 3, 4, 5, 4, 5, 7, 8, 10};
+    physicsWorld.createMountains(mountainVertices, 9, Vector3(0, 0, 0));
+    
     physicsWorld.activePhysicsAt(Vector3(0, 0, 0));
 
     btTransform chassisTransform;
