@@ -13,8 +13,6 @@ PolyAI is a AI model designed to play the game PolyTrack.
 
 ## Building
 
-Windows is not supported due to WasmTime not being available on Windows. Please use WSL.
-
 Pre-requisites:
 
 - [WASI SDK](https://github.com/WebAssembly/wasi-sdk)
@@ -38,6 +36,18 @@ Pre-requisites:
     ```bash
     make
     ```
+
+## Intellisense Setup
+
+First, you need to have the `clangd` language server installed as well as the extension for your code editor (e.g., VSCode).
+
+Next, you need to generate the intellisense build configuration using the Makefile:
+
+```bash
+make build-intellisense
+```
+
+Then, you're ready to use intellisense in your code editor.
 
 ## Formatting
 
