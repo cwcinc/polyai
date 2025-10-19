@@ -8,6 +8,7 @@ endif
 
 TOOLCHAIN_FILE := $(WASI_SDK)/share/cmake/wasi-sdk.cmake
 CMAKE_FLAGS := -DCMAKE_TOOLCHAIN_FILE=$(TOOLCHAIN_FILE) -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+CMAKE_BUILD_INTELLISENSE_FLAGS := -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="-DBT_NO_SIMD_OPERATOR_OVERLOADS=1" -DCMAKE_BUILD_TYPE=Release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
 ifeq ($(OS),Windows_NT)
   SRC_FILES := $(shell dir /b /s src\*)
@@ -33,6 +34,6 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 build-intellisense:
-	cmake -S . -B $(BUILD_DIR)/intellisense -G Ninja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="-DBT_NO_SIMD_OPERATOR_OVERLOADS=1" -DCMAKE_BUILD_TYPE=Release
+	cmake -S . -B $(BUILD_DIR)/intellisense -G Ninja $(CMAKE_BUILD_INTELLISENSE_FLAGS)
 
 .PHONY: all run clean build-intellisense
