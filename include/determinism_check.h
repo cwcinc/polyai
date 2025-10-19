@@ -10,6 +10,7 @@ class Vector3 {
 
     Vector3(double x = 0, double y = 0, double z = 0);
     double lengthSq() const;
+    double distanceTo(const Vector3 &other) const;
     bool equals(const Vector3 &other) const;
     bool operator==(const Vector3 &other) const;
     friend std::ostream &operator<<(std::ostream &stream, const Vector3 &self);
@@ -48,7 +49,7 @@ class PhysicsWorld {
         btRigidBody *body;
         btCollisionShape *shape;
         btTriangleMesh *triangleMesh;
-        btVector3 *offset;
+        Vector3 offset;
         double minimumRadius;
         bool isActive;
     };

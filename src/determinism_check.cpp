@@ -6,6 +6,12 @@ Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 double Vector3::lengthSq() const {
     return x * x + y * y + z * z;
 }
+double Vector3::distanceTo(const Vector3 &other) const {
+    double x0 = x - other.x;
+    double y0 = y - other.y;
+    double z0 = z - other.z;
+    return std::sqrt(x0 * x0 + y0 * y0 + z0 * z0);
+}
 bool Vector3::equals(const Vector3 &other) const {
     return x == other.x && y == other.y && z == other.z;
 }
@@ -53,7 +59,6 @@ void PhysicsWorld::dispose() {
         delete m_mountains->body;
         delete m_mountains->shape;
         delete m_mountains->triangleMesh;
-        delete m_mountains->offset;
         m_mountains.reset();
     }
 }
@@ -119,20 +124,20 @@ void PhysicsWorld::createMountains(const double vertices[], const size_t vertice
     btVector3 inertiaVec;
     mountainMeshShape->calculateLocalInertia(0, inertiaVec);
 
-    btDefaultMotionState motionState(transform);
+    auto motionState = new btDefaultMotionState(transform);
 
-    btRigidBody::btRigidBodyConstructionInfo constructionInfo(0, &motionState, mountainMeshShape, inertiaVec);
+    btRigidBody::btRigidBodyConstructionInfo constructionInfo(0, motionState, mountainMeshShape, inertiaVec);
     auto mountainsRigidBody = new btRigidBody(constructionInfo);
     mountainsRigidBody->setFriction(1.0);
 
     double minDistance = std::sqrt(minDistanceSq);
 
     m_mountains = std::make_unique<MountainInfo>();
-    
+
     m_mountains->body = mountainsRigidBody;
     m_mountains->shape = mountainMeshShape;
     m_mountains->triangleMesh = triangleMesh;
-    m_mountains->offset = offsetVec;
+    m_mountains->offset = offset;
     m_mountains->minimumRadius = minDistance;
     m_mountains->isActive = false;
 }
@@ -146,6 +151,18 @@ void PhysicsWorld::activePhysicsAt(const Vector3 &position) {
         } else if (position.y > 5 && m_ground->isActive) {
             m_dynamicsWorld.removeRigidBody(m_ground->body);
             m_ground->isActive = false;
+        }
+    }
+    if (m_mountains) {
+        double distance = position.distanceTo(m_mountains->offset);
+        if (distance > m_mountains->minimumRadius - 10) {
+            if (!m_mountains->isActive) {
+                m_dynamicsWorld.addRigidBody(m_mountains->body);
+                m_mountains->isActive = true;
+            }
+        } else if (distance < m_mountains->minimumRadius - 20 && m_mountains->isActive) {
+            m_dynamicsWorld.removeRigidBody(m_mountains->body);
+            m_mountains->isActive = false;
         }
     }
 }

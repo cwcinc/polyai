@@ -116,6 +116,8 @@
         "source_location": "cpp",
         "syncstream": "cpp",
         "hash_map": "cpp",
-        "*.inc": "cpp"
+        "*.inc": "cpp",
+        "hash_set": "cpp",
+        "stdfloat": "cpp"
     }
 }
