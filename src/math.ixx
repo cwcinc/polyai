@@ -9,9 +9,7 @@ export class Vector3 {
 
     Vector3(double x = 0, double y = 0, double z = 0) : x(x), y(y), z(z) {};
 
-    double lengthSq() const {
-        return x * x + y * y + z * z;
-    }
+    double lengthSq() const { return x * x + y * y + z * z; }
 
     double distanceTo(const Vector3 &other) const {
         double dx = x - other.x;
@@ -44,7 +42,7 @@ export class Quaternion {
     }
 
     bool operator==(const Quaternion &other) const { return equals(other); }
-    
+
     friend std::ostream &operator<<(std::ostream &stream,
                                     const Quaternion &self) {
         return stream << self.w << " + " << self.x << "i + " << self.y << "j + "

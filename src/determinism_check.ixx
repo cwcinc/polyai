@@ -85,7 +85,8 @@ class PhysicsWorld {
         m_ground->isActive = false;
     }
 
-    void createMountains(const double vertices[], const size_t verticeCount, const Vector3 &offset) {
+    void createMountains(const double vertices[], const size_t verticeCount,
+                         const Vector3 &offset) {
         if (verticeCount % 9 != 0) {
             std::cerr << "Number of mountain vertices is not dividable by 9\n";
             return;
@@ -105,10 +106,15 @@ class PhysicsWorld {
             btVector3 vec2(vertices[i + 3], vertices[i + 4], vertices[i + 5]);
             btVector3 vec3(vertices[i + 6], vertices[i + 7], vertices[i + 8]);
             triangleMesh->addTriangle(vec1, vec2, vec3, false);
-            
-            double l1 = Vector3(vertices[i], vertices[i + 1], vertices[i + 2]).lengthSq();
-            double l2 = Vector3(vertices[i + 3], vertices[i + 4], vertices[i + 5]).lengthSq();
-            double l3 = Vector3(vertices[i + 6], vertices[i + 7], vertices[i + 8]).lengthSq();
+
+            double l1 = Vector3(vertices[i], vertices[i + 1], vertices[i + 2])
+                            .lengthSq();
+            double l2 =
+                Vector3(vertices[i + 3], vertices[i + 4], vertices[i + 5])
+                    .lengthSq();
+            double l3 =
+                Vector3(vertices[i + 6], vertices[i + 7], vertices[i + 8])
+                    .lengthSq();
             minDistanceSq = std::min({minDistanceSq, l1, l2, l3});
         }
         auto mountainMeshShape = new btBvhTriangleMeshShape(triangleMesh, true);
@@ -123,7 +129,8 @@ class PhysicsWorld {
 
         auto motionState = new btDefaultMotionState(transform);
 
-        btRigidBody::btRigidBodyConstructionInfo constructionInfo(0, motionState, mountainMeshShape, inertiaVec);
+        btRigidBody::btRigidBodyConstructionInfo constructionInfo(
+            0, motionState, mountainMeshShape, inertiaVec);
         auto mountainsRigidBody = new btRigidBody(constructionInfo);
         mountainsRigidBody->setFriction(1.0);
 
@@ -158,7 +165,8 @@ class PhysicsWorld {
                     m_dynamicsWorld.addRigidBody(m_mountains->body);
                     m_mountains->isActive = true;
                 }
-            } else if (distance < m_mountains->minimumRadius - 20 && m_mountains->isActive) {
+            } else if (distance < m_mountains->minimumRadius - 20 &&
+                       m_mountains->isActive) {
                 m_dynamicsWorld.removeRigidBody(m_mountains->body);
                 m_mountains->isActive = false;
             }
@@ -180,7 +188,7 @@ export bool determinismCheck() {
 
     double mountainVertices[] = {2, 3, 4, 5, 4, 5, 7, 8, 10};
     physicsWorld.createMountains(mountainVertices, 9, Vector3(0, 0, 0));
-    
+
     physicsWorld.activePhysicsAt(Vector3(0, 0, 0));
 
     btTransform chassisTransform;
