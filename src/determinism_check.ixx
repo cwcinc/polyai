@@ -6,7 +6,11 @@ module;
 
 export module determinism_check;
 
-export class Vector3 {
+export bool determinismCheck();
+
+module :private;
+
+class Vector3 {
   public:
     double x, y, z;
 
@@ -16,7 +20,7 @@ export class Vector3 {
     friend std::ostream &operator<<(std::ostream &stream, const Vector3 &self);
 };
 
-export class Quaternion {
+class Quaternion {
   public:
     double x, y, z, w;
 
@@ -27,7 +31,7 @@ export class Quaternion {
                                     const Quaternion &self);
 };
 
-export class PhysicsWorld {
+class PhysicsWorld {
   private:
     static constexpr int STEPS_PER_SECOND = 1000;
     static constexpr double TIME_STEP = 1.0 / STEPS_PER_SECOND;
@@ -55,11 +59,6 @@ export class PhysicsWorld {
     btDiscreteDynamicsWorld &getWorld();
     btCollisionDispatcher &getDispatcher();
 };
-
-export bool determinismCheck();
-
-// Implementations
-module :private;
 
 Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z) {}
 bool Vector3::equals(const Vector3 &other) const {
