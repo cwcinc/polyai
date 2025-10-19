@@ -1,7 +1,11 @@
 #include "determinism_check.h"
+#include <algorithm>
 
 namespace DeterminismCheck {
 Vector3::Vector3(double x, double y, double z) : x(x), y(y), z(z) {}
+double Vector3::lengthSq() const {
+    return x * x + y * y + z * z;
+}
 bool Vector3::equals(const Vector3 &other) const {
     return x == other.x && y == other.y && z == other.z;
 }
@@ -41,6 +45,17 @@ void PhysicsWorld::dispose() {
         delete m_ground->shape;
         m_ground.reset();
     }
+    if (m_mountains && m_mountains->isActive) {
+        m_dynamicsWorld.removeRigidBody(m_mountains->body);
+    }
+    if (m_mountains) {
+        delete m_mountains->body->getMotionState();
+        delete m_mountains->body;
+        delete m_mountains->shape;
+        delete m_mountains->triangleMesh;
+        delete m_mountains->offset;
+        m_mountains.reset();
+    }
 }
 void PhysicsWorld::createGroundPlane() {
     if (m_ground) {
@@ -67,6 +82,58 @@ void PhysicsWorld::createGroundPlane() {
     m_ground->body = body;
     m_ground->shape = shape;
     m_ground->isActive = false;
+}
+void PhysicsWorld::createMountains(const double vertices[], const size_t verticeCount, const Vector3 &offset) {
+    if (verticeCount % 9 != 0) {
+        std::cerr << "Number of mountain vertices is not dividable by 9\n";
+        return;
+    }
+    if (verticeCount == 0) {
+        return;
+    }
+    if (m_mountains) {
+        std::cerr << "Mountains are already initialized\n";
+        return;
+    }
+
+    double minDistanceSq = std::numeric_limits<double>::max();
+    auto triangleMesh = new btTriangleMesh();
+    for (int i = 0; i < verticeCount; i += 9) {
+        btVector3 vec1(vertices[i], vertices[i + 1], vertices[i + 2]);
+        btVector3 vec2(vertices[i + 3], vertices[i + 4], vertices[i + 5]);
+        btVector3 vec3(vertices[i + 6], vertices[i + 7], vertices[i + 8]);
+        triangleMesh->addTriangle(vec1, vec2, vec3, false);
+        
+        double l1 = Vector3(vertices[i], vertices[i + 1], vertices[i + 2]).lengthSq();
+        double l2 = Vector3(vertices[i + 3], vertices[i + 4], vertices[i + 5]).lengthSq();
+        double l3 = Vector3(vertices[i + 6], vertices[i + 7], vertices[i + 8]).lengthSq();
+        minDistanceSq = std::min({minDistanceSq, l1, l2, l3});
+    }
+    auto mountainMeshShape = new btBvhTriangleMeshShape(triangleMesh, true);
+    mountainMeshShape->setMargin(0.02);
+    auto offsetVec = new btVector3(offset.x, offset.y, offset.z);
+    btTransform transform;
+    transform.setIdentity();
+    transform.setOrigin(*offsetVec);
+
+    btVector3 inertiaVec;
+    mountainMeshShape->calculateLocalInertia(0, inertiaVec);
+
+    btDefaultMotionState motionState(transform);
+
+    btRigidBody::btRigidBodyConstructionInfo constructionInfo(0, &motionState, mountainMeshShape, inertiaVec);
+    auto mountainsRigidBody = new btRigidBody(constructionInfo);
+    mountainsRigidBody->setFriction(1.0);
+
+    double minDistance = std::sqrt(minDistanceSq);
+
+    m_mountains = std::make_unique<MountainInfo>();
+    m_mountains->body = mountainsRigidBody;
+    m_mountains->shape = mountainMeshShape;
+    m_mountains->triangleMesh = triangleMesh;
+    m_mountains->offset = offsetVec;
+    m_mountains->minimumRadius = minDistance;
+    m_mountains->isActive = false;
 }
 void PhysicsWorld::activePhysicsAt(const Vector3 &position) {
     if (m_ground) {

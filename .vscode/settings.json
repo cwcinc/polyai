@@ -98,6 +98,24 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "__hash_table": "cpp",
+        "__locale": "cpp",
+        "__verbose_abort": "cpp",
+        "cinttypes": "cpp",
+        "csetjmp": "cpp",
+        "csignal": "cpp",
+        "cuchar": "cpp",
+        "string_view": "cpp",
+        "typeindex": "cpp",
+        "propagate_const": "cpp",
+        "latch": "cpp",
+        "numbers": "cpp",
+        "scoped_allocator": "cpp",
+        "semaphore": "cpp",
+        "source_location": "cpp",
+        "syncstream": "cpp",
+        "hash_map": "cpp",
+        "*.inc": "cpp"
     }
 }

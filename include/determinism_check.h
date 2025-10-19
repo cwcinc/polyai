@@ -9,6 +9,7 @@ class Vector3 {
     double x, y, z;
 
     Vector3(double x = 0, double y = 0, double z = 0);
+    double lengthSq() const;
     bool equals(const Vector3 &other) const;
     bool operator==(const Vector3 &other) const;
     friend std::ostream &operator<<(std::ostream &stream, const Vector3 &self);
@@ -43,11 +44,22 @@ class PhysicsWorld {
     };
     std::unique_ptr<GroundInfo> m_ground;
 
+    struct MountainInfo {
+        btRigidBody *body;
+        btCollisionShape *shape;
+        btTriangleMesh *triangleMesh;
+        btVector3 *offset;
+        double minimumRadius;
+        bool isActive;
+    };
+    std::unique_ptr<MountainInfo> m_mountains;
+
   public:
     PhysicsWorld();
     ~PhysicsWorld();
     void dispose();
     void createGroundPlane();
+    void createMountains(const double vertices[], const size_t verticeCount, const Vector3 &offset);
     void activePhysicsAt(const Vector3 &position);
     void step();
     btDiscreteDynamicsWorld &getWorld();
